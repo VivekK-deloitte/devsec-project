@@ -25,12 +25,12 @@ pipeline {
                 }
             }
         }
-         stage('Build Docker image') {
+         stage('Docker Build') {
             steps {
                 sh "docker build -t myimage:v1 ."
             }
         }
-        stage('Build Docker image') {
+        stage('Docker Push') {
             steps {
                 sh "docker tag myimage:v1 vivek02deloitte/hu_docker"
                 sh "echo $dockerHub_PSW | docker login -u $dockerHub_USR --password-stdin"
