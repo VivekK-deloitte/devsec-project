@@ -8,8 +8,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-                archive 'target/*.jar
+                sh 'mvn clean package -DskipTests=true'
+                archive 'target/*.jar'
             }
         }
         stage('Test') {
@@ -22,5 +22,12 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube'){
+                    sh "mvn sonar:sonar -Dsonar.projectKey=maven-project -Dsonar.host.url=http://localhost:9000"
+                }
+            }
+    }
     }
 }
