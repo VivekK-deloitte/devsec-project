@@ -4,6 +4,9 @@ pipeline {
     tools {
         maven "Maven 3.8.6"
     }
+    environment{
+    dockerHub=credentials('62b178b5-4de3-42dd-b76a-99de4aa1ee84')
+    }
     
     stages {
         stage('Build') {
@@ -20,6 +23,18 @@ pipeline {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
+            }
+        }
+         stage('Build Docker image') {
+            steps {
+                sh "docker build -t myimage:v1 ."
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                sh "docker tag myimage:v1 vivek02deloitte/hu_docker"
+                sh "echo $dockerHub_PSW | docker login -u $dockerHub_USR --password-stdin"
+                sh "docker push vivek02deloitte/hu_docker"
             }
         }
         stage('SonarQube analysis') {
